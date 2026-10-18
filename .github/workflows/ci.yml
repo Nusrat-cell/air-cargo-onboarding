@@ -1,0 +1,41 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the image
+        run: docker build -t cargo-onboarding .
+      - name: Run it and check both clients were onboarded and quarantined
+        run: |
+          docker run cargo-onboarding > run.log
+          cat run.log
+          grep -q '"decision": "NO-GO"' run.log
+          grep -q 'bluesky_forwarding_quarantine.csv' run.log
+  manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cfn-lint
+      - name: Lint the CloudFormation template
+        run: cfn-lint infra/s3.yaml
+      - name: Validate the Kubernetes manifest against the schema
+        run: |
+          curl -sL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz
+          ./kubeconform -strict -summary k8s/cronjob.yaml

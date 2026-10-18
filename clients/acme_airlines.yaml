@@ -1,0 +1,15 @@
+client: acme_airlines
+delimiter: ","
+weight_unit: kg
+date_format: "%Y-%m-%d"
+columns:
+  awb: AWB
+  origin: Origin
+  destination: Dest
+  flight_date: FlightDate
+  pieces: Pcs
+  weight_kg: WeightKg
+  length_cm: L
+  width_cm: W
+  height_cm: H
+  chargeable_kg: ChgKg

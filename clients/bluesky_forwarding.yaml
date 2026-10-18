@@ -1,0 +1,15 @@
+client: bluesky_forwarding
+delimiter: ";"
+weight_unit: lb
+date_format: "%d/%m/%Y"
+columns:
+  awb: Waybill
+  origin: From
+  destination: To
+  flight_date: Date
+  pieces: Packages
+  weight_kg: GrossLb
+  length_cm: Len
+  width_cm: Wid
+  height_cm: Hei
+  chargeable_kg: ChargeLb
